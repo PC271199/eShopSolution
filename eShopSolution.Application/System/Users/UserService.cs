@@ -18,14 +18,13 @@ namespace eShopSolution.Application.System.Users
         private readonly UserManager<AppUser> _userManager;
         private readonly SignInManager<AppUser> _signInManager;
         private readonly RoleManager<AppRole> _roleManager;
-        private readonly IConfiguration _config;
+        //private readonly IConfiguration _config; lay data o file appsettings
         public UserService(UserManager<AppUser> userManager, SignInManager<AppUser> signInManager,
-            RoleManager<AppRole> roleManager, IConfiguration config)
+            RoleManager<AppRole> roleManager)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _roleManager = roleManager;
-            _config = config;
         }
         public async Task<string> Authenticate(LoginRequest request)
         {
@@ -46,11 +45,11 @@ namespace eShopSolution.Application.System.Users
                 new Claim(ClaimTypes.GivenName,user.FirstName),
                 new Claim(ClaimTypes.Role,string.Join(";",roles)),
             };
-            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Tokens:Key"]));
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("phuoccong99@gmail.com"));
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
-            var token = new JwtSecurityToken(_config["Tokens:Issuer"],
-                _config["Tokens:Issuer"],
+            var token = new JwtSecurityToken("https://localhost/5001",
+                "https://localhost/5001",
                 claims,
                 expires: DateTime.Now.AddHours(3),
                 signingCredentials: creds);
