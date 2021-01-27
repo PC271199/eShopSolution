@@ -99,8 +99,11 @@ namespace eShopSolution.Application.Catalog.Product
         public async Task<ProductViewModel> GetById(int productId,string languageId)
         {
             var product = await _context.Products.FindAsync(productId);
+            //var productTranslation = await _context.ProductTranslations
+            //    .FirstOrDefaultAsync(x => x.ProductId == productId&& x.LanguageId==languageId );
             var productTranslation = await _context.ProductTranslations
-                .FirstOrDefaultAsync(x => x.ProductId == productId&& x.LanguageId==languageId );
+                .Where(x => x.ProductId == productId && x.LanguageId == languageId)
+                .FirstOrDefaultAsync();
             var productViewModel = new ProductViewModel()
             {
                 Id = product.Id,

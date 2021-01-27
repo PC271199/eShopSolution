@@ -18,13 +18,14 @@ namespace eShopSolution.Application.System.Users
         private readonly UserManager<AppUser> _userManager;
         private readonly SignInManager<AppUser> _signInManager;
         private readonly RoleManager<AppRole> _roleManager;
-        //private readonly IConfiguration _config; lay data o file appsettings
+        private readonly IConfiguration _config;
         public UserService(UserManager<AppUser> userManager, SignInManager<AppUser> signInManager,
-            RoleManager<AppRole> roleManager)
+            RoleManager<AppRole> roleManager, IConfiguration config)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _roleManager = roleManager;
+            _config = config;
         }
         public async Task<string> Authenticate(LoginRequest request)
         {
@@ -44,12 +45,13 @@ namespace eShopSolution.Application.System.Users
                 new Claim(ClaimTypes.Email,user.Email),
                 new Claim(ClaimTypes.GivenName,user.FirstName),
                 new Claim(ClaimTypes.Role,string.Join(";",roles)),
+                new Claim(ClaimTypes.Name,request.Username),
             };
-            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("phuoccong99@gmail.com"));
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Tokens:Key"]));
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
-            var token = new JwtSecurityToken("https://localhost/5001",
-                "https://localhost/5001",
+            var token = new JwtSecurityToken(_config["Tokens:Issuer"],
+                _config["Tokens:Issuer"],
                 claims,
                 expires: DateTime.Now.AddHours(3),
                 signingCredentials: creds);
