@@ -21,7 +21,6 @@ namespace eShopSolution.BackendApi.Controllers
         {
             _publicProductService = publicProductService;
             _manageProductService = manageProductService;
-            Console.WriteLine("vao roi nhe");
         }
         //[HttpGet("{languageId}")]
         //public async Task<IActionResult> GetAll(string languageId)

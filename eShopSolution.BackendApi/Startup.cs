@@ -52,12 +52,14 @@ namespace eShopSolution.BackendApi
             services.AddTransient<RoleManager<AppRole>, RoleManager<AppRole>>();
 
             services.AddTransient<IUserService, UserService>();
+            
             services.AddTransient<IValidator<LoginRequest>, LoginRequestValidator>();
             services.AddTransient<IValidator<RegisterRequest>, RegisterValidator>();
-            
-
+            // the following line can be replace 2 lines above
             services.AddControllers()
                 .AddFluentValidation(fv => fv.RegisterValidatorsFromAssemblyContaining<LoginRequestValidator>());
+            
+            
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "Swagger eShop Solution", Version = "v1" });
@@ -91,8 +93,8 @@ namespace eShopSolution.BackendApi
                     });
             });
 
-            string issuer = "https://localhost/5001";
-            string signingKey = "phuoccong99@gmail.com";
+            string issuer = Configuration.GetValue<string>("Tokens:Issuer");
+            string signingKey = Configuration.GetValue<string>("Tokens:Key");
             byte[] signingKeyBytes = System.Text.Encoding.UTF8.GetBytes(signingKey);
 
             services.AddAuthentication(opt =>
@@ -137,6 +139,7 @@ namespace eShopSolution.BackendApi
             app.UseStaticFiles();
 
             app.UseAuthentication();
+
             app.UseRouting();
 
             app.UseAuthorization();
